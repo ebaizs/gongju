@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码工具 - 常用工具集合</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+        }
+        .code-editor {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1a202c;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #e5e7eb;
+            resize: vertical;
+        }
+        .code-editor:focus {
+            outline: none;
+            border-color: #ed8936;
+            box-shadow: 0 0 0 3px rgba(237, 137, 54, 0.1);
+        }
+        .tool-section {
+            display: none;
+        }
+        .tool-section.active {
+            display: block;
+        }
+        .option-checkbox {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #6b7280;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+        }
+        .option-checkbox:checked {
+            background: #ed8936;
+            border-color: #ed8936;
+        }
+        .option-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        .stats-card {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid #374151;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(237, 137, 54, 0.3);
+        }
+        .ai-keyword-btn {
+            transition: all 0.2s ease;
+        }
+        .ai-keyword-btn:hover {
+            background: #ed8936;
+            transform: scale(1.05);
+        }
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 20% 50%, #ed8936 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #ed8936 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-100">
+    <div class="floating-bg"></div>
+    
+    <!-- 头部导航 -->
+    <header class="bg-gray-900 bg-opacity-50 backdrop-blur-lg border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">T</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">代码工具</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-orange-400 transition-colors">返回首页</a>
+                    <a href="#" class="text-gray-300 hover:text-orange-400 transition-colors">帮助</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 工具导航 -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-wrap justify-center space-x-2 mb-8">
+            <button class="tool-nav-btn active px-6 py-3 rounded-full font-medium text-sm" data-tool="obfuscator">
+                代码混淆
+            </button>
+            <button class="tool-nav-btn px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-tool="formatter">
+                代码格式化
+            </button>
+            <button class="tool-nav-btn px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-tool="ai-keywords">
+                AI关键词
+            </button>
+            <button class="tool-nav-btn px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-tool="compressor">
+                代码压缩
+            </button>
+        </div>
+    </div>
+
+    <!-- 代码混淆工具 -->
+    <div class="tool-section active container mx-auto px-4 pb-12" id="obfuscator">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- 输入区域 -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">输入代码</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-400">检测类型:</span>
+                        <span id="codeType" class="px-2 py-1 bg-orange-500 bg-opacity-20 text-orange-400 text-xs rounded">自动检测中...</span>
+                    </div>
+                </div>
+                <textarea 
+                    id="inputCode" 
+                    class="code-editor w-full h-96 p-4" 
+                    placeholder="在此粘贴您的HTML、JS或CSS代码...系统将自动检测代码类型"
+                    spellcheck="false"
+                ></textarea>
+                <div class="flex space-x-2">
+                    <button class="btn-primary px-4 py-2 rounded-lg text-white font-medium" onclick="loadExample()">
+                        加载示例
+                    </button>
+                    <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white font-medium" onclick="clearInput()">
+                        清空
+                    </button>
+                </div>
+            </div>
+
+            <!-- 输出区域 -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">混淆结果</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-400">压缩率:</span>
+                        <span id="compressionRate" class="px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 text-xs rounded">0%</span>
+                    </div>
+                </div>
+                <textarea 
+                    id="outputCode" 
+                    class="code-editor w-full h-96 p-4 bg-gray-900" 
+                    readonly
+                    placeholder="混淆后的代码将显示在这里..."
+                    spellcheck="false"
+                ></textarea>
+                <div class="flex space-x-2">
+                    <button class="btn-primary px-4 py-2 rounded-lg text-white font-medium" onclick="copyResult()">
+                        复制代码
+                    </button>
+                    <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white font-medium" onclick="downloadResult()">
+                        下载文件
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 混淆选项 -->
+        <div class="stats-card rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4">混淆选项</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="removeComments" class="option-checkbox" checked>
+                    <span class="text-gray-300">移除注释</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="compressWhitespace" class="option-checkbox" checked>
+                    <span class="text-gray-300">压缩空白</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="renameVariables" class="option-checkbox" checked>
+                    <span class="text-gray-300">重命名变量</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="encodeStrings" class="option-checkbox" checked>
+                    <span class="text-gray-300">编码字符串</span>
+                </label>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button class="btn-primary px-8 py-3 rounded-lg text-white font-medium text-lg" onclick="obfuscateCode()">
+                    开始混淆
+                </button>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="stats-card rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-orange-400 mb-2" id="originalSize">0</div>
+                <div class="text-gray-400">原始大小 (字符)</div>
+            </div>
+            <div class="stats-card rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-green-400 mb-2" id="obfuscatedSize">0</div>
+                <div class="text-gray-400">混淆后大小 (字符)</div>
+            </div>
+            <div class="stats-card rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-blue-400 mb-2" id="savedSize">0</div>
+                <div class="text-gray-400">节省空间 (字符)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代码格式化工具 -->
+    <div class="tool-section container mx-auto px-4 pb-12" id="formatter">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- 输入区域 -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">输入代码</h2>
+                    <select id="formatType" class="bg-gray-700 text-white px-3 py-1 rounded border border-gray-600">
+                        <option value="auto">自动检测</option>
+                        <option value="html">HTML</option>
+                        <option value="js">JavaScript</option>
+                        <option value="css">CSS</option>
+                    </select>
+                </div>
+                <textarea 
+                    id="formatInput" 
+                    class="code-editor w-full h-96 p-4" 
+                    placeholder="在此粘贴需要格式化的代码..."
+                    spellcheck="false"
+                ></textarea>
+                <div class="flex space-x-2">
+                    <button class="btn-primary px-4 py-2 rounded-lg text-white font-medium" onclick="formatCode()">
+                        格式化
+                    </button>
+                    <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white font-medium" onclick="clearFormatInput()">
+                        清空
+                    </button>
+                </div>
+            </div>
+
+            <!-- 输出区域 -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">格式化结果</h2>
+                    <div class="flex space-x-2">
+                        <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm text-white" onclick="fixErrors()">
+                            修复错误
+                        </button>
+                        <button class="bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded text-sm text-white" onclick="splitFiles()">
+                            拆分文件
+                        </button>
+                    </div>
+                </div>
+                <textarea 
+                    id="formatOutput" 
+                    class="code-editor w-full h-96 p-4 bg-gray-900" 
+                    readonly
+                    placeholder="格式化后的代码将显示在这里..."
+                    spellcheck="false"
+                ></textarea>
+                <div class="flex space-x-2">
+                    <button class="btn-primary px-4 py-2 rounded-lg text-white font-medium" onclick="copyFormattedCode()">
+                        复制代码
+                    </button>
+                    <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white font-medium" onclick="addComments()">
+                        添加注释
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 格式化选项 -->
+        <div class="stats-card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">格式化选项</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <h4 class="text-white font-medium mb-2">缩进设置</h4>
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="indent" value="spaces" checked class="text-orange-500">
+                        <span class="text-gray-300">空格</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="indent" value="tabs" class="text-orange-500">
+                        <span class="text-gray-300">制表符</span>
+                    </label>
+                </div>
+                <div>
+                    <h4 class="text-white font-medium mb-2">注释选项</h4>
+                    <select id="commentType" class="bg-gray-700 text-white px-3 py-1 rounded border border-gray-600 w-full">
+                        <option value="none">不添加注释</option>
+                        <option value="line">逐行注释</option>
+                        <option value="block">功能块注释</option>
+                    </select>
+                </div>
+                <div>
+                    <h4 class="text-white font-medium mb-2">修复选项</h4>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="fixBrackets" class="text-orange-500" checked>
+                        <span class="text-gray-300">修复括号匹配</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="fixSemicolons" class="text-orange-500" checked>
+                        <span class="text-gray-300">补全分号</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI编程关键词工具 -->
+    <div class="tool-section container mx-auto px-4 pb-12" id="ai-keywords">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 关键词模板 -->
+            <div class="lg:col-span-1">
+                <h2 class="text-xl font-semibold text-white mb-4">AI指令模板</h2>
+                <div class="space-y-3">
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">用替换法告诉我怎么改</div>
+                        <div class="text-sm text-gray-400 mt-1">用替换法告诉我怎么改：将XXX替换为YYY</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">拆除代码</div>
+                        <div class="text-sm text-gray-400 mt-1">拆除这段代码，按功能模块分离</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">增加全局变量</div>
+                        <div class="text-sm text-gray-400 mt-1">增加全局变量，使函数间可以共享数据</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">优化性能</div>
+                        <div class="text-sm text-gray-400 mt-1">优化这段代码的性能和可读性</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">添加错误处理</div>
+                        <div class="text-sm text-gray-400 mt-1">添加错误处理和边界检查</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">重构代码</div>
+                        <div class="text-sm text-gray-400 mt-1">重构为面向对象/函数式编程风格</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">添加测试</div>
+                        <div class="text-sm text-gray-400 mt-1">添加单元测试用例</div>
+                    </button>
+                    <button class="ai-keyword-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all" onclick="insertKeyword(this)">
+                        <div class="font-medium text-white">异步转换</div>
+                        <div class="text-sm text-gray-400 mt-1">转换为异步/await语法</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 编辑区域 -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">AI对话指令编辑</h2>
+                    <div class="flex space-x-2">
+                        <button class="btn-primary px-4 py-2 rounded-lg text-white font-medium" onclick="copyAICommand()">
+                            复制指令
+                        </button>
+                        <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white font-medium" onclick="clearAICommand()">
+                            清空
+                        </button>
+                    </div>
+                </div>
+                <textarea 
+                    id="aiCommand" 
+                    class="code-editor w-full h-64 p-4" 
+                    placeholder="点击左侧模板快速生成AI指令，或在此自定义输入..."
+                    spellcheck="false"
+                ></textarea>
+                
+                <!-- 代码上下文 -->
+                <div class="stats-card rounded-xl p-4">
+                    <h3 class="text-white font-medium mb-3">代码上下文（可选）</h3>
+                    <textarea 
+                        id="codeContext" 
+                        class="code-editor w-full h-32 p-3 text-sm" 
+                        placeholder="粘贴相关的代码片段，为AI提供更多上下文信息..."
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <!-- 快速操作 -->
+                <div class="stats-card rounded-xl p-4">
+                    <h3 class="text-white font-medium mb-3">快速操作</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <button class="ai-keyword-btn bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm text-white" onclick="addContext('替换法')">
+                            替换法
+                        </button>
+                        <button class="ai-keyword-btn bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm text-white" onclick="addContext('拆除代码')">
+                            拆除代码
+                        </button>
+                        <button class="ai-keyword-btn bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm text-white" onclick="addContext('全局变量')">
+                            全局变量
+                        </button>
+                        <button class="ai-keyword-btn bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm text-white" onclick="addContext('性能优化')">
+                            性能优化
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代码压缩工具 -->
+    <div class="tool-section container mx-auto px-4 pb-12" id="compressor">
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                <img src="resources/tool-icons/compressor.png" alt="代码压缩" class="w-16 h-16">
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-4">代码压缩工具</h2>
+            <p class="text-gray-400 text-lg mb-8">功能正在开发中，敬请期待...</p>
+            <button class="btn-primary px-8 py-3 rounded-lg text-white font-medium" onclick="window.location.href='index.html'">
+                返回首页
+            </button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 bg-opacity-50 backdrop-blur-lg border-t border-gray-700 mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <p class="text-gray-400 text-sm">© 2025 常用工具集合. 为开发者打造的实用工具箱</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

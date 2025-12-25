@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常用工具集合 - 开发者必备工具箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+        }
+        .tool-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(237, 137, 54, 0.2);
+        }
+        .category-tab {
+            transition: all 0.3s ease;
+        }
+        .category-tab.active {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            color: white;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            background-image: 
+                radial-gradient(circle at 20% 50%, #ed8936 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #ed8936 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, #ed8936 1.5px, transparent 1.5px);
+            background-size: 100px 100px, 150px 150px, 80px 80px;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        .code-pattern {
+            background-image: 
+                linear-gradient(90deg, rgba(237, 137, 54, 0.1) 1px, transparent 1px),
+                linear-gradient(rgba(237, 137, 54, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="text-gray-100">
+    <div class="floating-bg"></div>
+    
+    <!-- 头部导航 -->
+    <header class="bg-gray-900 bg-opacity-50 backdrop-blur-lg border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">T</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">常用工具集合</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-300 hover:text-orange-400 transition-colors">首页</a>
+                    <a href="#" class="text-gray-300 hover:text-orange-400 transition-colors">关于</a>
+                    <a href="#" class="text-gray-300 hover:text-orange-400 transition-colors">帮助</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 分类标签 -->
+        <div class="flex flex-wrap justify-center mb-12 space-x-2">
+            <button class="category-tab active px-6 py-3 rounded-full font-medium text-sm" data-category="code">
+                代码工具
+            </button>
+            <button class="category-tab px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-category="text">
+                文本处理
+            </button>
+            <button class="category-tab px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-category="image">
+                图像工具
+            </button>
+            <button class="category-tab px-6 py-3 rounded-full font-medium text-sm bg-gray-700 text-gray-300" data-category="network">
+                网络工具
+            </button>
+        </div>
+
+        <!-- 工具网格 -->
+        <div class="tool-grid" id="toolGrid">
+            <!-- 代码工具分类 -->
+            <div class="category-content" data-category="code">
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="window.location.href='code-tools.html#obfuscator'">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/obfuscator.png" alt="代码混淆" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">代码混淆工具</h3>
+                            <p class="text-gray-400 text-sm">智能检测代码类型，自动混淆HTML/JS/CSS混合代码，保护源代码安全</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-orange-500 bg-opacity-20 text-orange-400 text-xs rounded">智能检测</span>
+                                <span class="px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 text-xs rounded">实时预览</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="window.location.href='code-tools.html#formatter'">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/formatter.png" alt="代码格式化" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">代码格式化工具</h3>
+                            <p class="text-gray-400 text-sm">格式化HTML/JS/CSS代码，修复错误，拆分文件，添加注释</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-blue-500 bg-opacity-20 text-blue-400 text-xs rounded">错误修复</span>
+                                <span class="px-2 py-1 bg-purple-500 bg-opacity-20 text-purple-400 text-xs rounded">文件拆分</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="window.location.href='code-tools.html#ai-keywords'">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/ai-keywords.png" alt="AI关键词" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">AI编程关键词</h3>
+                            <p class="text-gray-400 text-sm">预设AI编程指令模板，快速生成代码修改建议和优化方案</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-purple-500 bg-opacity-20 text-purple-400 text-xs rounded">智能提示</span>
+                                <span class="px-2 py-1 bg-yellow-500 bg-opacity-20 text-yellow-400 text-xs rounded">模板库</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/compressor.png" alt="代码压缩" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">代码压缩工具</h3>
+                            <p class="text-gray-400 text-sm">压缩代码体积，移除不必要的字符，提升加载速度</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 text-xs rounded">体积优化</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文本处理分类 -->
+            <div class="category-content hidden" data-category="text">
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/text-replace.png" alt="文本替换" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">文本替换工具</h3>
+                            <p class="text-gray-400 text-sm">批量替换文本内容，支持正则表达式和多种匹配模式</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-cyan-500 bg-opacity-20 text-cyan-400 text-xs rounded">批量处理</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">🔐</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">文本加密工具</h3>
+                            <p class="text-gray-400 text-sm">多种加密算法，保护敏感文本信息</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-pink-500 bg-opacity-20 text-pink-400 text-xs rounded">安全加密</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">⚖️</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">文本对比工具</h3>
+                            <p class="text-gray-400 text-sm">对比两个文本文件的差异，高亮显示不同之处</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-indigo-500 bg-opacity-20 text-indigo-400 text-xs rounded">差异高亮</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">📊</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">文本统计工具</h3>
+                            <p class="text-gray-400 text-sm">统计字数、字符数、阅读时间等文本信息</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-teal-500 bg-opacity-20 text-teal-400 text-xs rounded">数据分析</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图像工具分类 -->
+            <div class="category-content hidden" data-category="image">
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/image-compress.png" alt="图像压缩" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">图像压缩工具</h3>
+                            <p class="text-gray-400 text-sm">压缩图像文件大小，保持高质量输出</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-red-500 bg-opacity-20 text-red-400 text-xs rounded">质量保持</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">🔄</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">格式转换工具</h3>
+                            <p class="text-gray-400 text-sm">多种图像格式相互转换，支持批量处理</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-yellow-500 bg-opacity-20 text-yellow-400 text-xs rounded">批量转换</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">📄</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">Base64转换</h3>
+                            <p class="text-gray-400 text-sm">图像与Base64编码相互转换</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">编码转换</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">✂️</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">图像裁剪工具</h3>
+                            <p class="text-gray-400 text-sm">智能裁剪图像，支持多种比例和尺寸</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-orange-500 bg-opacity-20 text-orange-400 text-xs rounded">智能裁剪</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 网络工具分类 -->
+            <div class="category-content hidden" data-category="network">
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <img src="resources/tool-icons/url-encode.png" alt="URL编码" class="w-12 h-12">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">URL编码工具</h3>
+                            <p class="text-gray-400 text-sm">URL编码解码，处理特殊字符和参数</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-blue-500 bg-opacity-20 text-blue-400 text-xs rounded">编码解码</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">⏰</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">时间戳转换</h3>
+                            <p class="text-gray-400 text-sm">时间戳与日期格式相互转换</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 text-xs rounded">时间处理</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">📋</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">JSON格式化</h3>
+                            <p class="text-gray-400 text-sm">JSON数据格式化和验证</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-purple-500 bg-opacity-20 text-purple-400 text-xs rounded">数据格式化</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-700 cursor-pointer" onclick="showComingSoon()">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">🔍</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-white mb-2">IP查询工具</h3>
+                            <p class="text-gray-400 text-sm">查询IP地址信息和地理位置</p>
+                            <div class="mt-3 flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-red-500 bg-opacity-20 text-red-400 text-xs rounded">网络查询</span>
+                                <span class="px-2 py-1 bg-gray-500 bg-opacity-20 text-gray-400 text-xs rounded">即将上线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 bg-opacity-50 backdrop-blur-lg border-t border-gray-700 mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <p class="text-gray-400 text-sm">© 2025 常用工具集合. 为开发者打造的实用工具箱</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 分类切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.category-tab');
+            const contents = document.querySelectorAll('.category-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // 更新标签状态
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.classList.add('bg-gray-700', 'text-gray-300');
+                    });
+                    this.classList.add('active');
+                    this.classList.remove('bg-gray-700', 'text-gray-300');
+                    
+                    // 显示对应内容
+                    contents.forEach(content => {
+                        if (content.dataset.category === category) {
+                            content.classList.remove('hidden');
+                            // 动画效果
+                            anime({
+                                targets: content.querySelectorAll('.tool-card'),
+                                translateY: [50, 0],
+                                opacity: [0, 1],
+                                delay: anime.stagger(100),
+                                duration: 600,
+                                easing: 'easeOutQuart'
+                            });
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            
+            // 页面加载动画
+            anime({
+                targets: '.tool-card',
+                translateY: [100, 0],
+                opacity: [0, 1],
+                delay: anime.stagger(150),
+                duration: 800,
+                easing: 'easeOutQuart'
+            });
+        });
+        
+        // 即将上线提示
+        function showComingSoon() {
+            // 创建提示元素
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.textContent = '功能即将上线，敬请期待！';
+            document.body.appendChild(notification);
+            
+            // 动画显示
+            anime({
+                targets: notification,
+                translateX: [300, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    translateX: [0, 300],
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInQuart',
+                    complete: () => {
+                        document.body.removeChild(notification);
+                    }
+                });
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
